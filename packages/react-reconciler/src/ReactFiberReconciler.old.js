@@ -262,7 +262,9 @@ export function updateContainer(
     onScheduleRoot(container, element);
   }
   const current = container.current;
+  // 初始化脚本的时间
   const eventTime = requestEventTime();
+  // 任务系统优先级
   const lane = requestUpdateLane(current);
 
   if (enableSchedulingProfiler) {
@@ -313,6 +315,8 @@ export function updateContainer(
   }
 
   enqueueUpdate(current, update, lane);
+  // 将Lane跟新进FiberTree相关的node, 获取FiberRoot
+  // 合并上个跟新遗留下低优先级的更新
   const root = scheduleUpdateOnFiber(current, lane, eventTime);
   if (root !== null) {
     entangleTransitions(root, current, lane);

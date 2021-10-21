@@ -500,6 +500,8 @@ export function claimNextRetryLane(): Lane {
   return lane;
 }
 
+// 获取低位的优先级
+// 获取最后一位为1的值
 export function getHighestPriorityLane(lanes: Lanes): Lane {
   return lanes & -lanes;
 }

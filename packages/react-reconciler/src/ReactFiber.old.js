@@ -148,6 +148,7 @@ function FiberNode(
   this.lanes = NoLanes;
   this.childLanes = NoLanes;
 
+  // 与之对应下（上）一次更新的Fiber
   this.alternate = null;
 
   if (enableProfilerTimer) {

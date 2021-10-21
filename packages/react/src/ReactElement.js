@@ -357,6 +357,10 @@ export function jsxDEV(type, config, maybeKey, source, self) {
 /**
  * Create and return a new ReactElement of the given type.
  * See https://reactjs.org/docs/react-api.html#createelement
+ * 1. 分离出config中的key,ref,__self,__source（特殊属性），和props（常规属性）.
+ * 2. 向props中添加children（单项/数组）
+ * 3. 对props中的属性为undefined且组件存在defaultProps的属性赋默认值
+ * 3. 返回ReactElement字面量
  */
 export function createElement(type, config, children) {
   let propName;

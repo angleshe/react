@@ -14,6 +14,8 @@ if (__DEV__) {
 
 /**
  * Base class helpers for the updating state of a component.
+ * Component： 1.记录构造函数中的入参， 2.定义setState，forceUpdate方法（来源于平台层的updater）
+ * PureComponent：1.继承Component 2.定义isPureReactComponent属性
  */
 function Component(props, context, updater) {
   this.props = props;

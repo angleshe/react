@@ -163,9 +163,12 @@ if (__DEV__) {
 export function initializeUpdateQueue<State>(fiber: Fiber): void {
   const queue: UpdateQueue<State> = {
     baseState: fiber.memoizedState,
+    // 上一次更新后跳过的所有更新组成的链表头尾
     firstBaseUpdate: null,
     lastBaseUpdate: null,
     shared: {
+      // 单向环
+      // 更新时会剪开环并连接到lastBaseUpdate后面
       pending: null,
       interleaved: null,
       lanes: NoLanes,
@@ -238,8 +241,10 @@ export function enqueueUpdate<State>(
     const pending = sharedQueue.pending;
     if (pending === null) {
       // This is the first update. Create a circular list.
+      // 闭环
       update.next = update;
     } else {
+      // pending -> update -> pending.next
       update.next = pending.next;
       pending.next = update;
     }
