@@ -71,7 +71,7 @@ var IDLE_PRIORITY_TIMEOUT = maxSigned31BitInt;
 // Tasks are stored on a min heap
 // 普通任务最小堆
 var taskQueue = [];
-// 延时任务最小堆 在任务开始时会添加入taskQueue并获得最高优先级（过期）
+// 延时任务最小堆 在任务开始时会添加入taskQueue
 var timerQueue = [];
 
 // Incrementing id counter. Used to maintain insertion order.
