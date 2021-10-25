@@ -112,7 +112,7 @@ function printWarning(level, format, args) {
 
     argsWithFormat.unshift('Warning: ' + format); // We intentionally don't use spread (or .apply) directly because it
     // breaks IE9: https://github.com/facebook/react/issues/13610
-    // eslint-disable-next-line react-internal/no-production-logging
+
 
     Function.prototype.apply.call(console[level], console, argsWithFormat);
   }
@@ -246,7 +246,7 @@ disabledLog.__reactDisabledLog = true;
 function disableLogs() {
   {
     if (disabledDepth === 0) {
-      /* eslint-disable react-internal/no-production-logging */
+
       prevLog = console.log;
       prevInfo = console.info;
       prevWarn = console.warn;
@@ -271,7 +271,7 @@ function disableLogs() {
         groupCollapsed: props,
         groupEnd: props
       });
-      /* eslint-enable react-internal/no-production-logging */
+
     }
 
     disabledDepth++;
@@ -282,7 +282,7 @@ function reenableLogs() {
     disabledDepth--;
 
     if (disabledDepth === 0) {
-      /* eslint-disable react-internal/no-production-logging */
+
       var props = {
         configurable: true,
         enumerable: true,
@@ -312,7 +312,7 @@ function reenableLogs() {
           value: prevGroupEnd
         })
       });
-      /* eslint-enable react-internal/no-production-logging */
+
     }
 
     if (disabledDepth < 0) {

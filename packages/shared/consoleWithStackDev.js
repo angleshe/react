@@ -47,13 +47,13 @@ function printWarning(level, format, args) {
       args = args.concat([stack]);
     }
 
-    // eslint-disable-next-line react-internal/safe-string-coercion
+
     const argsWithFormat = args.map(item => String(item));
     // Careful: RN currently depends on this prefix
     argsWithFormat.unshift('Warning: ' + format);
     // We intentionally don't use spread (or .apply) directly because it
     // breaks IE9: https://github.com/facebook/react/issues/13610
-    // eslint-disable-next-line react-internal/no-production-logging
+
     Function.prototype.apply.call(console[level], console, argsWithFormat);
   }
 }

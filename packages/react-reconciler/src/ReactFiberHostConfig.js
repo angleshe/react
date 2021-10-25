@@ -7,7 +7,7 @@
  * @flow
  */
 
-/* eslint-disable react-internal/prod-error-codes */
+
 
 // We expect that our Rollup, Jest, and Flow configurations
 // always shim this module with the corresponding host config
@@ -17,4 +17,5 @@
 // sure that if we *do* accidentally break the configuration,
 // the failure isn't silent.
 
-throw new Error('This module must be shimmed by a specific renderer.');
+// throw new Error('This module must be shimmed by a specific renderer.');
+export * from './forks/ReactFiberHostConfig.dom';

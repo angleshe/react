@@ -69,22 +69,31 @@ var LOW_PRIORITY_TIMEOUT = 10000;
 var IDLE_PRIORITY_TIMEOUT = maxSigned31BitInt;
 
 // Tasks are stored on a min heap
+// 普通任务最小堆
 var taskQueue = [];
+// 延时任务最小堆 在任务开始时会添加入taskQueue并获得最高优先级（过期）
 var timerQueue = [];
 
 // Incrementing id counter. Used to maintain insertion order.
+// 任务id计数器
 var taskIdCounter = 1;
 
 // Pausing the scheduler is useful for debugging.
+// 让workLoop暂停
 var isSchedulerPaused = false;
 
+// 当前正在执行的任务
 var currentTask = null;
+// 当前任务执行的优秀级
 var currentPriorityLevel = NormalPriority;
 
 // This is set while performing work, to prevent re-entrance.
+// 是否有任务正在执行中
 var isPerformingWork = false;
 
+// 当前是否有主调度任务安排进下一个系统js队列中去（任务执行前被置为false）
 var isHostCallbackScheduled = false;
+// 是否存在主要的延时任务
 var isHostTimeoutScheduled = false;
 
 // Capture local references to native APIs, in case a polyfill overrides them.
@@ -103,6 +112,7 @@ const isInputPending =
 
 const continuousOptions = {includeContinuous: enableIsInputPendingContinuous};
 
+// 处理判断延时任务中的任务是否开始执行， 如果超过开始执行时间则会添加入taskQueue
 function advanceTimers(currentTime) {
   // Check for tasks that are no longer delayed and add them to the queue.
   let timer = peek(timerQueue);
@@ -137,6 +147,7 @@ function handleTimeout(currentTime) {
       requestHostCallback(flushWork);
     } else {
       const firstTimer = peek(timerQueue);
+      // ？？ 这种情况存在吗 -> 没有任何延时任务到期，即将要开始的延时任务在前面被取消了或执行了
       if (firstTimer !== null) {
         requestHostTimeout(handleTimeout, firstTimer.startTime - currentTime);
       }
@@ -151,6 +162,7 @@ function flushWork(hasTimeRemaining, initialTime) {
 
   // We'll need a host callback the next time work is scheduled.
   isHostCallbackScheduled = false;
+  // 取消定时任务，因为在workLoop会不断的去检查timerQueue中的任务是否可以开始，所以这里不需要定时触发检查
   if (isHostTimeoutScheduled) {
     // We scheduled a timeout but it's no longer needed. Cancel it.
     isHostTimeoutScheduled = false;
@@ -188,8 +200,12 @@ function flushWork(hasTimeRemaining, initialTime) {
 
 function workLoop(hasTimeRemaining, initialTime) {
   let currentTime = initialTime;
+  // 确保获取的是最新的taskQueue
   advanceTimers(currentTime);
+  // 这里不直接pop是应为执行任务后可能返回一个后续任务，这时候返回的任务会延用单前任务的优先级过期时间等属性
+  // currentTask是一个引用类型，通过修改currentTask的属性值taskQueue相关项的属性也会随着变化。
   currentTask = peek(taskQueue);
+  // 按过期时间先后执行完taskQueue中所有的任务（除非workLoop被暂停了或者还没过期的任务运行时间超过允许帧间隔）
   while (
     currentTask !== null &&
     !(enableSchedulerDebugging && isSchedulerPaused)
@@ -233,8 +249,10 @@ function workLoop(hasTimeRemaining, initialTime) {
   }
   // Return whether there's additional work
   if (currentTask !== null) {
+     // workLoop被暂停了或者还没过期的任务运行时间超过允许帧间隔
     return true;
   } else {
+    // 恢复延时任务
     const firstTimer = peek(timerQueue);
     if (firstTimer !== null) {
       requestHostTimeout(handleTimeout, firstTimer.startTime - currentTime);
@@ -359,6 +377,8 @@ function unstable_scheduleCallback(priorityLevel, callback, options) {
     newTask.sortIndex = startTime;
     push(timerQueue, newTask);
     if (peek(taskQueue) === null && newTask === peek(timerQueue)) {
+      // 这时候可能添加进来的延时任务比之前延时任务队列中的任务开始执行时间短
+      // 所以这里需要把当前的延时任务清空，重新对延时任务里的最先开始的任务（堆顶）开始计时
       // All tasks are delayed, and this is the task with the earliest delay.
       if (isHostTimeoutScheduled) {
         // Cancel an existing timeout.
@@ -422,7 +442,9 @@ function unstable_getCurrentPriorityLevel() {
   return currentPriorityLevel;
 }
 
+// 是否有任务运行（包含：isHostCallbackScheduled 和 isPerformingWork两个时期）
 let isMessageLoopRunning = false;
+
 let scheduledHostCallback = null;
 let taskTimeoutID = -1;
 
@@ -433,10 +455,11 @@ let taskTimeoutID = -1;
 let frameInterval = frameYieldMs;
 const continuousInputInterval = continuousYieldMs;
 const maxInterval = maxYieldMs;
+// 记录调度开始任务执行时间， 可用于计算执行任务花费的时间
 let startTime = -1;
 
 let needsPaint = false;
-
+// 检测任务运行时间是否超过允许帧间隔
 function shouldYieldToHost() {
   const timeElapsed = getCurrentTime() - startTime;
   if (timeElapsed < frameInterval) {
@@ -531,6 +554,7 @@ const performWorkUntilDeadline = () => {
       hasMoreWork = scheduledHostCallback(hasTimeRemaining, currentTime);
     } finally {
       if (hasMoreWork) {
+        // 把未过期而且在一个帧间隔内无法完成的任务推到下一个系统js时间循环中做
         // If there's more work, schedule the next message event at the end
         // of the preceding one.
         schedulePerformWorkUntilDeadline();
@@ -578,7 +602,7 @@ if (typeof localSetImmediate === 'function') {
     localSetTimeout(performWorkUntilDeadline, 0);
   };
 }
-
+// 推迟到下个js事件循环中执行
 function requestHostCallback(callback) {
   scheduledHostCallback = callback;
   if (!isMessageLoopRunning) {

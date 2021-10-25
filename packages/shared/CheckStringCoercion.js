@@ -77,7 +77,7 @@ function testStringCoercion(value: mixed) {
   // In most cases, this console output also shows the component and its
   // ancestor components where the exception happened.
   //
-  // eslint-disable-next-line react-internal/safe-string-coercion
+
   return '' + (value: any);
 }
 

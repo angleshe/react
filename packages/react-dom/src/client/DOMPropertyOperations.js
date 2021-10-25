@@ -52,7 +52,7 @@ export function getValueForProperty(
         // If we haven't fully disabled javascript: URLs, and if
         // the hydration is successful of a javascript: URL, we
         // still want to warn on the client.
-        // eslint-disable-next-line react-internal/safe-string-coercion
+
         sanitizeURL('' + (expected: any));
       }
 
@@ -69,7 +69,7 @@ export function getValueForProperty(
           if (shouldRemoveAttribute(name, expected, propertyInfo, false)) {
             return value;
           }
-          // eslint-disable-next-line react-internal/safe-string-coercion
+
           if (value === '' + (expected: any)) {
             return expected;
           }
@@ -95,7 +95,7 @@ export function getValueForProperty(
 
       if (shouldRemoveAttribute(name, expected, propertyInfo, false)) {
         return stringValue === null ? expected : stringValue;
-        // eslint-disable-next-line react-internal/safe-string-coercion
+
       } else if (stringValue === '' + (expected: any)) {
         return expected;
       } else {

@@ -462,6 +462,7 @@ export function scheduleUpdateOnFiber(
     return null;
   }
 
+  // 将update挂载上FiberRoot的pendingLane中
   // Mark that the root has a pending update.
   markRootUpdated(root, lane, eventTime);
 
@@ -630,6 +631,7 @@ export function isInterleavedUpdate(fiber: Fiber, lane: Lane) {
 function ensureRootIsScheduled(root: FiberRoot, currentTime: number) {
   const existingCallbackNode = root.callbackNode;
 
+  // 给等待中的任务添加过期时间，对过期的任务放入过期任务中
   // Check if any lanes are being starved by other work. If so, mark them as
   // expired so we know to work on those next.
   markStarvedLanesAsExpired(root, currentTime);
@@ -697,6 +699,7 @@ function ensureRootIsScheduled(root: FiberRoot, currentTime: number) {
       if (__DEV__ && ReactCurrentActQueue.isBatchingLegacy !== null) {
         ReactCurrentActQueue.didScheduleLegacyUpdate = true;
       }
+      // 放入同步事件队列中
       scheduleLegacySyncCallback(performSyncWorkOnRoot.bind(null, root));
     } else {
       scheduleSyncCallback(performSyncWorkOnRoot.bind(null, root));
@@ -1070,9 +1073,6 @@ function isRenderConsistentWithExternalStores(finishedWork: Fiber): boolean {
     node.sibling.return = node.return;
     node = node.sibling;
   }
-  // Flow doesn't know this is unreachable, but eslint does
-  // eslint-disable-next-line no-unreachable
-  return true;
 }
 
 function markRootSuspended(root, suspendedLanes) {
@@ -1215,9 +1215,9 @@ export function discreteUpdates<A, B, C, D, R>(
 
 // Overload the definition to the two valid signatures.
 // Warning, this opts-out of checking the function body.
-declare function flushSync<R>(fn: () => R): R;
+// declare function flushSync<R>(fn: () => R): R;
 // eslint-disable-next-line no-redeclare
-declare function flushSync(): void;
+// declare function flushSync(): void;
 // eslint-disable-next-line no-redeclare
 export function flushSync(fn) {
   // In legacy mode, we flush pending passive effects at the beginning of the

@@ -25,6 +25,8 @@ import {
 import {isDevToolsPresent} from './ReactFiberDevToolsHook.old';
 import {ConcurrentUpdatesByDefaultMode, NoMode} from './ReactTypeOfMode';
 
+// 任务等级： 越小越高级
+//
 // Lane values below should be kept in sync with getLabelForLane(), used by react-devtools-scheduling-profiler.
 // If those values are changed that package should be rebuilt and redeployed.
 
@@ -72,7 +74,7 @@ export const SomeRetryLane: Lane = RetryLane1;
 export const SelectiveHydrationLane: Lane = /*          */ 0b0001000000000000000000000000000;
 
 const NonIdleLanes = /*                                 */ 0b0001111111111111111111111111111;
-
+// 空闲任务，只在空闲时执行
 export const IdleHydrationLane: Lane = /*               */ 0b0010000000000000000000000000000;
 export const IdleLane: Lanes = /*                       */ 0b0100000000000000000000000000000;
 
@@ -181,7 +183,7 @@ function getHighestPriorityLanes(lanes: Lanes | Lane): Lanes {
       return lanes;
   }
 }
-
+// 下一个lane应该是在pending中非阻塞非空闲的最高级任务
 export function getNextLanes(root: FiberRoot, wipLanes: Lanes): Lanes {
   // Early bailout if there's no pending work left.
   const pendingLanes = root.pendingLanes;
@@ -191,6 +193,7 @@ export function getNextLanes(root: FiberRoot, wipLanes: Lanes): Lanes {
 
   let nextLanes = NoLanes;
 
+  // 阻塞任务
   const suspendedLanes = root.suspendedLanes;
   const pingedLanes = root.pingedLanes;
 
@@ -198,7 +201,9 @@ export function getNextLanes(root: FiberRoot, wipLanes: Lanes): Lanes {
   // even if the work is suspended.
   const nonIdlePendingLanes = pendingLanes & NonIdleLanes;
   if (nonIdlePendingLanes !== NoLanes) {
+    // 去除阻塞任务
     const nonIdleUnblockedLanes = nonIdlePendingLanes & ~suspendedLanes;
+
     if (nonIdleUnblockedLanes !== NoLanes) {
       nextLanes = getHighestPriorityLanes(nonIdleUnblockedLanes);
     } else {
@@ -403,6 +408,8 @@ export function markStarvedLanesAsExpired(
   let lanes = pendingLanes;
   while (lanes > 0) {
     const index = pickArbitraryLaneIndex(lanes);
+    // 获取二进制最高位的1的值
+    // 获取等待任务中优先级最低的值
     const lane = 1 << index;
 
     const expirationTime = expirationTimes[index];

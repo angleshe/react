@@ -35,7 +35,7 @@ export function pop(heap: Heap): Node | null {
   }
   return first;
 }
-
+// 最小堆 上浮
 function siftUp(heap, node, i) {
   let index = i;
   while (index > 0) {
@@ -52,7 +52,7 @@ function siftUp(heap, node, i) {
     }
   }
 }
-
+// 最小堆 下沉
 function siftDown(heap, node, i) {
   let index = i;
   const length = heap.length;

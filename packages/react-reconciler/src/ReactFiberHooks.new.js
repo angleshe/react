@@ -1543,7 +1543,7 @@ function pushEffect(tag, create, destroy, deps) {
 let stackContainsErrorMessage: boolean | null = null;
 
 function getCallerStackFrame(): string {
-  // eslint-disable-next-line react-internal/prod-error-codes
+
   const stackFrames = new Error('Error message').stack.split('\n');
 
   // Some browsers (e.g. Chrome) include the error message in the stack

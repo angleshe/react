@@ -11,17 +11,17 @@ const OFF = 0;
 const ERROR = 2;
 
 module.exports = {
-  extends: ['fbjs', 'prettier'],
+  extends: [],
 
   // Stop ESLint from looking for a configuration file in parent folders
   root: true,
 
   plugins: [
     'jest',
-    'no-for-of-loops',
-    'no-function-declare-after-return',
+    // 'no-for-of-loops',
+    // 'no-function-declare-after-return',
     'react',
-    'react-internal',
+    // 'react-internal',
   ],
 
   parser: 'babel-eslint',
@@ -100,30 +100,30 @@ module.exports = {
 
     // Prevent for...of loops because they require a Symbol polyfill.
     // You can disable this rule for code that isn't shipped (e.g. build scripts and tests).
-    'no-for-of-loops/no-for-of-loops': ERROR,
+    // 'no-for-of-loops/no-for-of-loops': ERROR,
 
     // Prevent function declarations after return statements
-    'no-function-declare-after-return/no-function-declare-after-return': ERROR,
+    // 'no-function-declare-after-return/no-function-declare-after-return': ERROR,
 
     // CUSTOM RULES
     // the second argument of warning/invariant should be a literal string
-    'react-internal/no-primitive-constructors': ERROR,
-    'react-internal/safe-string-coercion': [
-      ERROR,
-      {isProductionUserAppCode: true},
-    ],
-    'react-internal/no-to-warn-dev-within-to-throw': ERROR,
-    'react-internal/invariant-args': ERROR,
-    'react-internal/warning-args': ERROR,
-    'react-internal/no-production-logging': ERROR,
-    'react-internal/no-cross-fork-imports': ERROR,
-    'react-internal/no-cross-fork-types': [
-      ERROR,
-      {
-        old: [],
-        new: [],
-      },
-    ],
+    // 'react-internal/no-primitive-constructors': ERROR,
+    // 'react-internal/safe-string-coercion': [
+    //   ERROR,
+    //   {isProductionUserAppCode: true},
+    // ],
+    // 'react-internal/no-to-warn-dev-within-to-throw': ERROR,
+    // 'react-internal/invariant-args': ERROR,
+    // 'react-internal/warning-args': ERROR,
+    // 'react-internal/no-production-logging': ERROR,
+    // 'react-internal/no-cross-fork-imports': ERROR,
+    // 'react-internal/no-cross-fork-types': [
+    //   ERROR,
+    //   {
+    //     old: [],
+    //     new: [],
+    //   },
+    // ],
   },
 
   overrides: [
@@ -133,7 +133,7 @@ module.exports = {
       // in the next override entry.
       files: ['packages/**/*.js'],
       rules: {
-        'react-internal/prod-error-codes': ERROR,
+        // 'react-internal/prod-error-codes': ERROR,
       },
     },
     {
@@ -159,7 +159,7 @@ module.exports = {
         'packages/**/npm/*.js',
       ],
       rules: {
-        'react-internal/prod-error-codes': OFF,
+        // 'react-internal/prod-error-codes': OFF,
       },
     },
     {
@@ -212,12 +212,12 @@ module.exports = {
         'packages/react-dom/src/test-utils/*.js',
       ],
       rules: {
-        'react-internal/no-production-logging': OFF,
-        'react-internal/warning-args': OFF,
-        'react-internal/safe-string-coercion': [
-          ERROR,
-          {isProductionUserAppCode: false},
-        ],
+        // 'react-internal/no-production-logging': OFF,
+        // 'react-internal/warning-args': OFF,
+        // 'react-internal/safe-string-coercion': [
+        //   ERROR,
+        //   {isProductionUserAppCode: false},
+        // ],
 
         // Disable accessibility checks
         'jsx-a11y/aria-role': OFF,
