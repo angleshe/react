@@ -178,6 +178,7 @@ export function initializeUpdateQueue<State>(fiber: Fiber): void {
   fiber.updateQueue = queue;
 }
 
+// 将候补节点的updateQueue独立出来
 export function cloneUpdateQueue<State>(
   current: Fiber,
   workInProgress: Fiber,

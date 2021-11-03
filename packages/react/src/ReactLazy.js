@@ -48,6 +48,9 @@ export type LazyComponent<T, P> = {
   _init: (payload: P) => T,
 };
 
+// 开始加载组件
+// 加载时，则抛出异常
+// 加载成功， 返回组件
 function lazyInitializer<T>(payload: Payload<T>): T {
   if (payload._status === Uninitialized) {
     const ctor = payload._result;

@@ -40,9 +40,13 @@ function FiberRootNode(containerInfo, tag, hydrate) {
   this.context = null;
   this.pendingContext = null;
   this.isDehydrated = hydrate;
+  // 正准备执行的scheduleTask
   this.callbackNode = null;
+  // 正准备执行的scheduleTask的Lane
   this.callbackPriority = NoLane;
+  // 对应lane的eventTimes
   this.eventTimes = createLaneMap(NoLanes);
+  // 对应lane的过期时间
   this.expirationTimes = createLaneMap(NoTimestamp);
 
   this.pendingLanes = NoLanes;

@@ -101,6 +101,7 @@ export {
   useRef,
   useState,
   REACT_FRAGMENT_TYPE as Fragment,
+  // 测量child的渲染性能
   REACT_PROFILER_TYPE as Profiler,
   REACT_STRICT_MODE_TYPE as StrictMode,
   REACT_DEBUG_TRACING_MODE_TYPE as unstable_DebugTracingMode,

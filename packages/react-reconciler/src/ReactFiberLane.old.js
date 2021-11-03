@@ -326,7 +326,7 @@ export function getMostRecentEventTime(root: FiberRoot, lanes: Lanes): number {
 
   return mostRecentEventTime;
 }
-
+// 过期时间计算，和lane相关
 function computeExpirationTime(lane: Lane, currentTime: number) {
   switch (lane) {
     case SyncLane:
@@ -569,7 +569,7 @@ export function createLaneMap<T>(initial: T): LaneMap<T> {
   }
   return laneMap;
 }
-
+// 将对应lane推入fiberRoot的pendingLane中,并将eventTime放入对应的fiberRoot的eventTimes对应Lanes中维护一个Lane到eventTime的映射关系
 export function markRootUpdated(
   root: FiberRoot,
   updateLane: Lane,

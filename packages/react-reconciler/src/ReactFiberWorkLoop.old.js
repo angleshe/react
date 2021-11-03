@@ -262,12 +262,16 @@ const RootSuspendedWithDelay = 4;
 const RootCompleted = 5;
 
 // Describes where we are in the React execution stack
+// 当前运行的上下文
 let executionContext: ExecutionContext = NoContext;
 // The root we're working on
+// 当前只在工作的FiberRoot
 let workInProgressRoot: FiberRoot | null = null;
 // The fiber we're working on
+// 标志正准备工作的Fiber
 let workInProgress: Fiber | null = null;
 // The lanes we're rendering
+// 正在工作的lane
 let workInProgressRootRenderLanes: Lanes = NoLanes;
 
 // Stack that allows components to change the render lanes for its subtree
@@ -289,6 +293,7 @@ let workInProgressRootFatalError: mixed = null;
 // slightly different than `renderLanes` because `renderLanes` can change as you
 // enter and exit an Offscreen tree. This value is the combination of all render
 // lanes for the entire render phase.
+// 正在工作包含的Lane
 let workInProgressRootIncludedLanes: Lanes = NoLanes;
 // The work left over by components that were visited during this render. Only
 // includes unprocessed updates, not work in bailed out children.
@@ -457,6 +462,7 @@ export function scheduleUpdateOnFiber(
 ): FiberRoot | null {
   checkForNestedUpdates();
 
+  // 将lane挂在在当前fiber的lanes上和挂在进当前所有父fiber的childLanes
   const root = markUpdateLaneFromFiberToRoot(fiber, lane);
   if (root === null) {
     return null;
@@ -1098,7 +1104,7 @@ function performSyncWorkOnRoot(root) {
   if ((executionContext & (RenderContext | CommitContext)) !== NoContext) {
     throw new Error('Should not already be working.');
   }
-
+  // 待研究
   flushPassiveEffects();
 
   let lanes = getNextLanes(root, NoLanes);
@@ -1237,6 +1243,7 @@ export function flushSync(fn) {
   const previousPriority = getCurrentUpdatePriority();
   try {
     ReactCurrentBatchConfig.transition = 0;
+    //
     setCurrentUpdatePriority(DiscreteEventPriority);
     if (fn) {
       return fn();
@@ -1301,6 +1308,7 @@ export function popRenderLanes(fiber: Fiber) {
   popFromStack(subtreeRenderLanesCursor, fiber);
 }
 
+// 更新工作进程相关的全局变量和创建、更新rootFiber候补Fiber
 function prepareFreshStack(root: FiberRoot, lanes: Lanes) {
   root.finishedWork = null;
   root.finishedLanes = NoLanes;

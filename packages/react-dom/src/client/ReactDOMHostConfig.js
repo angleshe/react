@@ -164,6 +164,7 @@ function shouldAutoFocusHostComponent(type: string, props: Props): boolean {
 
 export * from 'react-reconciler/src/ReactFiberHostConfigWithNoPersistence';
 
+// 获取dom的namespaceURI
 export function getRootHostContext(
   rootContainerInstance: Container,
 ): HostContext {

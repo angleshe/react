@@ -16,8 +16,11 @@ import {
 } from './ReactEventPriorities.old';
 import {ImmediatePriority, scheduleCallback} from './Scheduler';
 
+// 同步函数队列
 let syncQueue: Array<SchedulerCallback> | null = null;
+// 是否存在传统同步的任务
 let includesLegacySyncCallbacks: boolean = false;
+// 是否在运行同步任务队列循环
 let isFlushingSyncQueue: boolean = false;
 
 export function scheduleSyncCallback(callback: SchedulerCallback) {

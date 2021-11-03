@@ -31,7 +31,7 @@ export function get(key) {
 export function has(key) {
   return key._reactInternals !== undefined;
 }
-
+// 让classComponent的_reactInternals指向fiber
 export function set(key, value) {
   key._reactInternals = value;
 }

@@ -1262,6 +1262,7 @@ function pushHostRootContext(workInProgress) {
 }
 
 function updateHostRoot(current, workInProgress, renderLanes) {
+  // 将一系列变量push进fiberStack中
   pushHostRootContext(workInProgress);
   const updateQueue = workInProgress.updateQueue;
 
@@ -1397,6 +1398,7 @@ function mountLazyComponent(
   elementType,
   renderLanes,
 ) {
+
   if (_current !== null) {
     // A lazy component only mounts if it suspended inside a non-
     // concurrent tree, in an inconsistent state. We want to treat it like
@@ -1587,7 +1589,6 @@ function mountIndeterminateComponent(
 
   prepareToReadContext(workInProgress, renderLanes);
   let value;
-
   if (enableSchedulingProfiler) {
     markComponentRenderStarted(workInProgress);
   }
@@ -2221,7 +2222,9 @@ function mountSuspensePrimaryChildren(
   workInProgress.child = primaryChildFragment;
   return primaryChildFragment;
 }
-
+// 创建SuspenseFiber链
+// workInProgress.child -> primaryChildFragment(tag: Fragment)
+// primaryChildFragment.sibling -> fallbackChildFragment(tag: OffscreenComponent)
 function mountSuspenseFallbackChildren(
   workInProgress,
   primaryChildren,
@@ -3604,6 +3607,7 @@ function attemptEarlyBailoutIfNoScheduledUpdate(
   return bailoutOnAlreadyFinishedWork(current, workInProgress, renderLanes);
 }
 
+// 将工作的filber的lanes设置为nolanes 并设置是否要接收跟新 按filber的tag调用相关的更新
 function beginWork(
   current: Fiber | null,
   workInProgress: Fiber,
@@ -3630,7 +3634,6 @@ function beginWork(
   if (current !== null) {
     const oldProps = current.memoizedProps;
     const newProps = workInProgress.pendingProps;
-
     if (
       oldProps !== newProps ||
       hasLegacyContextChanged() ||
@@ -3684,6 +3687,7 @@ function beginWork(
   // move this assignment out of the common path and into each branch.
   workInProgress.lanes = NoLanes;
 
+  // debugger;
   switch (workInProgress.tag) {
     case IndeterminateComponent: {
       return mountIndeterminateComponent(

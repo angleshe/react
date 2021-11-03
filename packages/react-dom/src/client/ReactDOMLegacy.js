@@ -31,8 +31,8 @@ import {
   updateContainer,
   flushSync,
   getPublicRootInstance,
-  findHostInstance,
-  findHostInstanceWithWarning,
+  // findHostInstance,
+  // findHostInstanceWithWarning,
 } from 'react-reconciler/src/ReactFiberReconciler';
 import {LegacyRoot} from 'react-reconciler/src/ReactRootTags';
 import getComponentNameFromType from 'shared/getComponentNameFromType';
@@ -101,13 +101,14 @@ function getReactRootElementInContainer(container: any) {
     return container.firstChild;
   }
 }
-
+// 创建FiberRoot,绑定container事件监听
 function legacyCreateRootFromDOMContainer(
   container: Container,
   forceHydrate: boolean,
 ): FiberRoot {
   // First clear any existing content.
   if (!forceHydrate) {
+    // 清除container下面的节点
     let rootSibling;
     while ((rootSibling = container.lastChild)) {
       container.removeChild(rootSibling);
@@ -217,10 +218,6 @@ export function findDOMNode(
   if ((componentOrElement: any).nodeType === ELEMENT_NODE) {
     return (componentOrElement: any);
   }
-  if (__DEV__) {
-    return findHostInstanceWithWarning(componentOrElement, 'findDOMNode');
-  }
-  return findHostInstance(componentOrElement);
 }
 
 export function hydrate(

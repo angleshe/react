@@ -160,6 +160,7 @@ if (__DEV__) {
   Object.freeze(fakeInternalInstance);
 }
 
+// 执行getDerivedStateFromProps初始化state
 function applyDerivedStateFromProps(
   workInProgress: Fiber,
   ctor: any,
@@ -579,6 +580,8 @@ function checkClassInstance(workInProgress: Fiber, ctor: any, newProps: any) {
   }
 }
 
+// 绑定classComponent实例的updater
+// 绑定fiber跟classComponent实例的对应关系
 function adoptClassInstance(workInProgress: Fiber, instance: any): void {
   instance.updater = classComponentUpdater;
   workInProgress.stateNode = instance;
@@ -589,6 +592,7 @@ function adoptClassInstance(workInProgress: Fiber, instance: any): void {
   }
 }
 
+// 创建classComponent实例并将其绑定进fiber
 function constructClassInstance(
   workInProgress: Fiber,
   ctor: any,

@@ -118,31 +118,46 @@ function FiberNode(
   mode: TypeOfMode,
 ) {
   // Instance
+  // 标识Fiber的类型
   this.tag = tag;
+  // key
   this.key = key;
+  // lazyComponents中为Lazy的ReactElement
   this.elementType = null;
+  // ReactElement的属性指向FunctionalComponent/string/ClassComponent
   this.type = null;
+  // rootFiber指向fiberRoot， classComponent指向实例化对象，或者特殊节点中存放渲染过程需要的一些方法。
   this.stateNode = null;
 
   // Fiber
+  // 指向父本
   this.return = null;
+  // 指向第一个孩子节点
   this.child = null;
+  // 指向下一个兄弟节点
   this.sibling = null;
+  // 记录在兄弟节点中的位置
   this.index = 0;
 
   this.ref = null;
 
+  // 正在等待跟新的props
+  // ！！！Fragment、PortalComponent 中的Props直接是Fragment的props.children
   this.pendingProps = pendingProps;
+  // 当前的Props
   this.memoizedProps = null;
+  // 更新队列
   this.updateQueue = null;
+  // 当前的state
   this.memoizedState = null;
   this.dependencies = null;
-
+  // 渲染模式
   this.mode = mode;
 
   // Effects
   this.flags = NoFlags;
   this.subtreeFlags = NoFlags;
+  // 标记渲染阶段需要删除的子fiber
   this.deletions = null;
 
   this.lanes = NoLanes;
@@ -243,6 +258,8 @@ export function resolveLazyComponentTag(Component: Function): WorkTag {
 }
 
 // This is used to create an alternate fiber to do work on.
+// 创建fiber的候补fiber（通过alternate互连）
+// 候补fiber与fiber区别为属性pendingProps、alternate、flags、subtreeFlags、deletions
 export function createWorkInProgress(current: Fiber, pendingProps: any): Fiber {
   let workInProgress = current.alternate;
   if (workInProgress === null) {

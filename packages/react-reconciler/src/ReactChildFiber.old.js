@@ -1103,6 +1103,7 @@ function ChildReconciler(shouldTrackSideEffects) {
     return created;
   }
 
+  // 将reactElement转换为Fiber，绑定fiber的return
   function reconcileSingleElement(
     returnFiber: Fiber,
     currentFirstChild: Fiber | null,
